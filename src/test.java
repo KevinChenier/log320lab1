@@ -8,8 +8,7 @@ public class test {
         ArrayList<Integer> tempArray = new ArrayList<Integer>();
         String fileName = "exemple.txt";
         try {
-            final BufferedReader in = new BufferedReader(
-                    new InputStreamReader(new FileInputStream(fileName), StandardCharsets.UTF_8));
+            final BufferedReader in = new BufferedReader(new InputStreamReader(new FileInputStream(fileName), StandardCharsets.UTF_8));
             int charactere;
             while ((charactere = in.read()) != -1) {
                 tempArray.add(charactere);
@@ -20,7 +19,7 @@ public class test {
         }
 
         for(int z = 0; z<300; z++) {
-            System.out.println(tempArray.get(z));
+            System.out.println((char)(int)tempArray.get(z));
         }
         System.out.println("size : "+ tempArray.size());
     }
