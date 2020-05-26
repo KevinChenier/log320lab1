@@ -2,12 +2,13 @@ import java.io.*;
 import java.nio.ByteBuffer;
 import java.nio.channels.FileChannel;
 import java.nio.charset.StandardCharsets;
+import java.nio.file.Files;
 import java.util.ArrayList;
 
 public class test {
     public static void main(String[] args) throws FileNotFoundException,IOException
     {
-        //Quick read
+        //Quick read with Integer
         ArrayList<Integer> tempArray = new ArrayList<Integer>();
         String fileName = "exemple.txt";
         try {
@@ -27,6 +28,13 @@ public class test {
         System.out.println("size : "+ tempArray.size());
 
 
+        //Quick read with Bytes
+        byte [] fileBytes = Files.readAllBytes(new File("exemple.txt").toPath());
+        char singleChar;
+        for(byte b : fileBytes) {
+            singleChar = (char) b;
+            System.out.print(singleChar);
+        }
 
 
 
