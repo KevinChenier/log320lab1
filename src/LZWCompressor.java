@@ -3,7 +3,7 @@ public class LZWCompressor {
 
     }
 
-    void uncompress() {
+    void decompress() {
 
     }
 }

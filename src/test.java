@@ -26,6 +26,10 @@ public class test {
         }
         System.out.println("size : "+ tempArray.size());
 
+
+
+
+
         //Fast Write
         RandomAccessFile out = null;
         try {
@@ -33,7 +37,7 @@ public class test {
             FileChannel file = out.getChannel();
             ByteBuffer buf = file.map(FileChannel.MapMode.READ_WRITE, 0, 4 * tempArray.size());
             for (int i : tempArray) {
-                buf.putChar((char)i);
+                buf.allocate(4).putInt(i).array();
             }
             file.close();
         } catch (IOException e) {

@@ -3,7 +3,7 @@ public class HuffmanCompressor {
 
     }
 
-    void uncompress() {
+    void decompress() {
 
     }
 }
