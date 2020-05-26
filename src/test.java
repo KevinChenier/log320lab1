@@ -33,7 +33,7 @@ public class test {
         char singleChar;
         for(byte b : fileBytes) {
             singleChar = (char) b;
-            System.out.print(singleChar);
+            System.out.println(String.format("0x%X %c", b, singleChar));
         }
 
 
