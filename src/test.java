@@ -1,10 +1,13 @@
 import java.io.*;
+import java.nio.ByteBuffer;
+import java.nio.channels.FileChannel;
 import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
 
 public class test {
     public static void main(String[] args) throws FileNotFoundException,IOException
     {
+        //Quick read
         ArrayList<Integer> tempArray = new ArrayList<Integer>();
         String fileName = "exemple.txt";
         try {
@@ -22,5 +25,23 @@ public class test {
             System.out.println((char)(int)tempArray.get(z));
         }
         System.out.println("size : "+ tempArray.size());
+
+        //Fast Write
+        RandomAccessFile out = null;
+        try {
+            out = new RandomAccessFile("out.txt", "rw");
+            FileChannel file = out.getChannel();
+            ByteBuffer buf = file.map(FileChannel.MapMode.READ_WRITE, 0, 4 * tempArray.size());
+            for (int i : tempArray) {
+                buf.putChar((char)i);
+            }
+            file.close();
+        } catch (IOException e) {
+            throw new RuntimeException(e);
+        } finally {
+            if (out != null) {
+                out.close();
+            }
+        }
     }
 }
