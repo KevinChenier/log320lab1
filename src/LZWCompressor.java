@@ -41,22 +41,28 @@ public class LZWCompressor {
 
         String w = "" + (char)(int)compressed.remove(0);
         StringBuffer result = new StringBuffer(w);
-        for (int k : compressed) {
-            String entry;
-            if (dictionary.containsKey(k))
-                entry = dictionary.get(k);
-            else if (k == dictSize)
-                entry = w + w.charAt(0);
-            else
-                throw new IllegalArgumentException("Bad compressed k: " + k);
+        try {
+            for (int k : compressed) {
+                String entry;
+                if (dictionary.containsKey(k))
+                    entry = dictionary.get(k);
+                else if (k == dictSize)
+                    entry = w + w.charAt(0);
+                else
+                    throw new IllegalArgumentException("Bad compressed k: " + k);
 
-            result.append(entry);
+                result.append(entry);
 
-            // Add w+entry[0] to the dictionary.
-            dictionary.put(dictSize++, w + entry.charAt(0));
+                // Add w+entry[0] to the dictionary.
+                dictionary.put(dictSize++, w + entry.charAt(0));
 
-            w = entry;
+                w = entry;
+            }
+        } catch (NullPointerException e){
+            System.err.println("Null exception was catched... LZW decompression failed.");
+            return result.toString();
+        } finally {
+            return result.toString();
         }
-        return result.toString();
     }
 }

@@ -23,7 +23,6 @@ public class test {
         } catch (final IOException e) {
             e.printStackTrace();
         }
-
     }
 
     public void intRead(String inPathName) {
