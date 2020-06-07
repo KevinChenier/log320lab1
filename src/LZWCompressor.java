@@ -5,11 +5,13 @@ import java.util.Map;
 
 public class LZWCompressor {
 
+    private static final int dictionnarySize = 16384;
+
     public List<Integer> compress(String uncompressed) {
         // Build the dictionary.
-        int dictSize = 256;
-        Map<String,Integer> dictionary = new HashMap<String,Integer>();
-        for (int i = 0; i < 256; i++)
+        int dictSize = dictionnarySize;
+        HashMap<String,Integer> dictionary = new HashMap<String,Integer>();
+        for (int i = 0; i < dictionnarySize; i++)
             dictionary.put("" + (char)i, i);
 
         String w = "";
@@ -34,28 +36,19 @@ public class LZWCompressor {
 
     public String decompress(List<Integer> compressed) {
         // Build the dictionary.
-        int dictSize = 256;
-        Map<Integer,String> dictionary = new HashMap<Integer,String>();
-        for (int i = 0; i < 256; i++)
+        int dictSize = dictionnarySize;
+        HashMap<Integer,String> dictionary = new HashMap<Integer,String>();
+        for (int i = 0; i < dictionnarySize; i++)
             dictionary.put(i, "" + (char)i);
 
         String w = "" + (char)(int)compressed.remove(0);
         StringBuffer result = new StringBuffer(w);
         try {
             for (int k : compressed) {
-                String entry;
-                if (dictionary.containsKey(k))
-                    entry = dictionary.get(k);
-                else if (k == dictSize)
-                    entry = w + w.charAt(0);
-                else
-                    throw new IllegalArgumentException("Bad compressed k: " + k);
-
+                String entry = dictionary.containsKey(k) ? dictionary.get(k) : w + w.charAt(0);
                 result.append(entry);
 
-                // Add w+entry[0] to the dictionary.
                 dictionary.put(dictSize++, w + entry.charAt(0));
-
                 w = entry;
             }
         } catch (NullPointerException e){
