@@ -24,7 +24,7 @@ public class LZWCompressor {
                 result.add(dictionary.get(w));
                 // Add wc to the dictionary.
                 dictionary.put(wc, dictSize++);
-                w = "" + c;
+                w = Character.toString(c);
             }
         }
 

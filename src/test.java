@@ -73,7 +73,6 @@ public class test {
         long stopTimeDecompressed = System.currentTimeMillis();
         long stopTimeAll = System.currentTimeMillis();
 
-
         System.out.println("Compression time:" + (stopTimeCompressed - startTimeCompressed) + " ms");
         System.out.println("Decompression time:" + (stopTimeDecompressed - startTimeDecompressed) + " ms");
         System.out.println("Compression and Decompression time:" + (stopTimeAll - startTimeAll) + " ms");
