@@ -1,59 +1,84 @@
 import java.io.*;
-import java.nio.ByteBuffer;
-import java.nio.channels.FileChannel;
 import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
-import java.util.ArrayList;
+import java.util.List;
 
 public class test {
-    public static void main(String[] args) throws FileNotFoundException,IOException
-    {
-        //Quick read with Integer
-        ArrayList<Integer> tempArray = new ArrayList<Integer>();
-        String fileName = "exemple.txt";
+
+    public static final String defaultInPathName = "exemple.txt";
+    public static final String defaultOutPathName = "out.txt";
+    public StringBuilder stringBuilder = new StringBuilder();
+
+    public void byteRead(String inPathName) {
+        //Quick read with Bytes
         try {
-            final BufferedReader in = new BufferedReader(new InputStreamReader(new FileInputStream(fileName), StandardCharsets.UTF_8));
-            int charactere;
-            while ((charactere = in.read()) != -1) {
-                tempArray.add(charactere);
+            byte [] fileBytes = Files.readAllBytes(new File(inPathName).toPath());
+            char singleChar;
+            for(byte b : fileBytes) {
+                singleChar = (char) b;
+                stringBuilder.append(singleChar);
+            }
+            System.out.println(stringBuilder.toString());
+        } catch (final IOException e) {
+            e.printStackTrace();
+        }
+    }
+
+    public void intRead(String inPathName) {
+        //Quick read with Integer
+        try {
+            final BufferedReader in = new BufferedReader(new InputStreamReader(new FileInputStream(inPathName), StandardCharsets.UTF_8));
+            int singleCharInt;
+            char singleChar;
+            while ((singleCharInt = in.read()) != -1) {
+                singleChar = (char) singleCharInt;
+                stringBuilder.append(singleChar);
             }
             in.close();
         } catch (final IOException e) {
             e.printStackTrace();
         }
+    }
 
-        for(int z = 0; z<300; z++) {
-            System.out.println((char)(int)tempArray.get(z));
+    public void fastWrite(String stringToWrite, String outPathName) {
+        if(stringToWrite.isEmpty())
+        {
+            System.err.println("String is empty");
+            return;
         }
-        System.out.println("size : "+ tempArray.size());
-
-
-        //Quick read with Bytes
-        byte [] fileBytes = Files.readAllBytes(new File("exemple.txt").toPath());
-        char singleChar;
-        for(byte b : fileBytes) {
-            singleChar = (char) b;
-            System.out.println(String.format("0x%X %c", b, singleChar));
-        }
-
-
-
         //Fast Write
-        RandomAccessFile out = null;
+        FileWriter myWriter = null;
         try {
-            out = new RandomAccessFile("out.txt", "rw");
-            FileChannel file = out.getChannel();
-            ByteBuffer buf = file.map(FileChannel.MapMode.READ_WRITE, 0, 4 * tempArray.size());
-            for (int i : tempArray) {
-                buf.allocate(4).putInt(i).array();
-            }
-            file.close();
+            myWriter = new FileWriter(outPathName);
+            myWriter.write(stringToWrite);
+            myWriter.close();
         } catch (IOException e) {
             throw new RuntimeException(e);
-        } finally {
-            if (out != null) {
-                out.close();
-            }
         }
     }
+
+    public static void main(String[] args) {
+        test Test = new test();
+        Test.intRead(defaultInPathName);
+        String stringToCompress = Test.stringBuilder.toString();
+
+        LZWCompressor LZWcompressor = new LZWCompressor();
+
+        long startTimeAll = System.currentTimeMillis();
+        long startTimeCompressed = System.currentTimeMillis();
+        List<Integer> compressedArray = LZWcompressor.compress(stringToCompress);
+        long stopTimeCompressed = System.currentTimeMillis();
+        long startTimeDecompressed = System.currentTimeMillis();
+        String stringDecompressed = LZWcompressor.decompress(compressedArray);
+        long stopTimeDecompressed = System.currentTimeMillis();
+        long stopTimeAll = System.currentTimeMillis();
+
+        System.out.println("Compression time:" + (stopTimeCompressed - startTimeCompressed) + " ms");
+        System.out.println("Decompression time:" + (stopTimeDecompressed - startTimeDecompressed) + " ms");
+        System.out.println("Compression and Decompression time:" + (stopTimeAll - startTimeAll) + " ms");
+
+        Test.fastWrite(stringDecompressed, defaultOutPathName);
+    }
 }
+
+
