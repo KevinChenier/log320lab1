@@ -1,6 +1,8 @@
 import java.io.*;
 import java.nio.charset.StandardCharsets;
+import java.util.ArrayList;
 import java.util.List;
+import java.util.Scanner;
 
 public class Test {
 
@@ -63,18 +65,27 @@ public class Test {
 		}
 	}
 
+	public List<Integer> extractIntegerListFromFile(String pathName) throws FileNotFoundException {
+		Scanner scanner = new Scanner(new File(pathName));
+		scanner.useDelimiter("\\D+");
+		List<Integer> list = new ArrayList<Integer>();
+		while (scanner.hasNextInt()) {
+			list.add(scanner.nextInt());
+		}
+		return list;
+	}
+
 	public static void main(String[] args) throws IOException {
-		long startTimeAll = System.currentTimeMillis();
 		if(args.length != 4){
 			throw new ExceptionInInitializerError();
 		}
 		defaultInPathName = args[2];
 		defaultOutPathName = args[3];
 		Test test = new Test();
-		test.intRead(defaultInPathName);
-		String stringToCompress = test.stringBuilder.toString();
 
 		if((args[0].equals("-huff") || args[0].equals("-opt")) && args[1].equals("-c")) {
+			test.byteRead(defaultInPathName);
+			String stringToCompress = test.stringBuilder.toString();
 			HuffmanCompressor HUFFcompressor = new HuffmanCompressor();
 			String stringCompressed = HUFFcompressor.encode(stringToCompress);
 			test.writeToFile(stringCompressed);
@@ -85,18 +96,17 @@ public class Test {
 			test.fastWrite(stringDecompressed);
 		}
 		else if(args[0].equals("-lzw") && args[1].equals("-c")) {
+			test.byteRead(defaultInPathName);
+			String stringToCompress = test.stringBuilder.toString();
 			LZWCompressor LZWcompressor = new LZWCompressor();
 			List<Integer> compressedArray = LZWcompressor.compress(stringToCompress);
 			test.fastWrite(compressedArray.toString());
 		}
 		else if(args[0].equals("-lzw") && args[1].equals("-d")) {
 			LZWCompressor LZWcompressor = new LZWCompressor();
-			List<Integer> integerList = LZWcompressor.extractIntegerListFromFile(defaultInPathName);
+			List<Integer> integerList = test.extractIntegerListFromFile(defaultInPathName);
 			String stringDecompressed = LZWcompressor.decompress(integerList);
 			test.fastWrite(stringDecompressed);
 		}
-
-		long stopTimeAll = System.currentTimeMillis();
-		System.out.println("Compression and Decompression time:" + (stopTimeAll - startTimeAll) + " ms");
 	}
 }

@@ -11,7 +11,7 @@ public class LZWCompressor {
         int dictSize = dictionnarySize;
         HashMap<String,Integer> dictionary = new HashMap<String,Integer>();
         for (int i = 0; i < dictionnarySize; i++)
-            dictionary.put("" + (char)i, i);
+            dictionary.put(Character.toString((char)i), i);
 
         String w = "";
         List<Integer> result = new ArrayList<Integer>();
@@ -38,7 +38,7 @@ public class LZWCompressor {
         int dictSize = dictionnarySize;
         HashMap<Integer,String> dictionary = new HashMap<Integer,String>();
         for (int i = 0; i < dictionnarySize; i++)
-            dictionary.put(i, "" + (char)i);
+            dictionary.put(i, Character.toString((char)i));
 
         String w = "" + (char)(int)compressed.remove(0);
         StringBuffer result = new StringBuffer(w);
@@ -56,14 +56,5 @@ public class LZWCompressor {
         } finally {
             return result.toString();
         }
-    }
-
-    public List<Integer> extractIntegerListFromFile(String pathName) throws FileNotFoundException {
-        Scanner scanner = new Scanner(new File(pathName));
-        List<Integer> list = new ArrayList<Integer>();
-        while (scanner.hasNextInt()) {
-            list.add(scanner.nextInt());
-        }
-        return list;
     }
 }
