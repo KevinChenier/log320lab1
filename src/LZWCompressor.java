@@ -5,7 +5,7 @@ import java.util.Map;
 
 public class LZWCompressor {
 
-    private static final int dictionnarySize = 16384;
+    private static final int dictionnarySize = 256;
 
     public List<Integer> compress(String uncompressed) {
         // Build the dictionary.

@@ -5,8 +5,8 @@ import java.util.List;
 
 public class Test {
 
-	public static String defaultInPathName = "exemple.txt";
-	public static String defaultOutPathName = "out.txt";
+	public static String defaultInPathName;
+	public static String defaultOutPathName;
 	public StringBuilder stringBuilder = new StringBuilder();
 
 	public void byteRead(String inPathName) {
@@ -77,8 +77,8 @@ public class Test {
 
 		if((args[0].equals("-huff") || args[0].equals("-opt")) && args[1].equals("-c")) {
 			HuffmanCompressor HUFFcompressor = new HuffmanCompressor();
-			String s = HUFFcompressor.encode(stringToCompress);
-			test.writeToFile(s);
+			String stringCompressed = HUFFcompressor.encode(stringToCompress);
+			test.writeToFile(stringCompressed);
 		}
 		else if((args[0].equals("-huff") || args[0].equals("-opt")) && args[1].equals("-d")) {
 			HuffmanCompressor HUFFcompressor = new HuffmanCompressor();
@@ -92,8 +92,8 @@ public class Test {
 		}
 		else if(args[0].equals("-lzw") && args[1].equals("-d")) {
 			LZWCompressor LZWcompressor = new LZWCompressor();
-			//String stringDecompressed = LZWcompressor.decompress(compressedArray);
-			//test.fastWrite(stringDecompressed);
+			String stringDecompressed = LZWcompressor.decompress(compressedArray);
+			test.fastWrite(stringDecompressed);
 		}
 
 		long stopTimeAll = System.currentTimeMillis();
