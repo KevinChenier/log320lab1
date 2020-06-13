@@ -1,7 +1,6 @@
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.io.File;
+import java.io.FileNotFoundException;
+import java.util.*;
 
 public class LZWCompressor {
 
@@ -57,5 +56,14 @@ public class LZWCompressor {
         } finally {
             return result.toString();
         }
+    }
+
+    public List<Integer> extractIntegerListFromFile(String pathName) throws FileNotFoundException {
+        Scanner scanner = new Scanner(new File(pathName));
+        List<Integer> list = new ArrayList<Integer>();
+        while (scanner.hasNextInt()) {
+            list.add(scanner.nextInt());
+        }
+        return list;
     }
 }

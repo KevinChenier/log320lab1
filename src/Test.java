@@ -1,6 +1,5 @@
 import java.io.*;
 import java.nio.charset.StandardCharsets;
-import java.nio.file.Files;
 import java.util.List;
 
 public class Test {
@@ -10,15 +9,15 @@ public class Test {
 	public StringBuilder stringBuilder = new StringBuilder();
 
 	public void byteRead(String inPathName) {
-		// Quick read with Bytes
-		try {
-			byte[] fileBytes = Files.readAllBytes(new File(inPathName).toPath());
+		File file = new File(inPathName);
+
+		try (BufferedInputStream bufferedInputStream = new BufferedInputStream(new FileInputStream(file))) {
+			int singleCharInt;
 			char singleChar;
-			for (byte b : fileBytes) {
-				singleChar = (char) b;
+			while((singleCharInt = bufferedInputStream.read()) != -1) {
+				singleChar = (char) singleCharInt;
 				stringBuilder.append(singleChar);
 			}
-			System.out.println(stringBuilder.toString());
 		} catch (final IOException e) {
 			e.printStackTrace();
 		}
@@ -88,11 +87,12 @@ public class Test {
 		else if(args[0].equals("-lzw") && args[1].equals("-c")) {
 			LZWCompressor LZWcompressor = new LZWCompressor();
 			List<Integer> compressedArray = LZWcompressor.compress(stringToCompress);
-
+			test.fastWrite(compressedArray.toString());
 		}
 		else if(args[0].equals("-lzw") && args[1].equals("-d")) {
 			LZWCompressor LZWcompressor = new LZWCompressor();
-			String stringDecompressed = LZWcompressor.decompress(compressedArray);
+			List<Integer> integerList = LZWcompressor.extractIntegerListFromFile(defaultInPathName);
+			String stringDecompressed = LZWcompressor.decompress(integerList);
 			test.fastWrite(stringDecompressed);
 		}
 
