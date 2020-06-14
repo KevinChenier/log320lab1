@@ -1,7 +1,4 @@
-import java.io.EOFException;
-import java.io.File;
-import java.io.FileNotFoundException;
-import java.io.IOException;
+import java.io.*;
 import java.util.*;
 
 public class LZWCompressor {
@@ -33,6 +30,51 @@ public class LZWCompressor {
         if (!w.equals(""))
             result.add(dictionary.get(w));
         return result;
+    }
+
+    public void compress3(String filein, String fileout) {
+        // Build the dictionary.
+        int dictSize = dictionnarySize;
+        HashMap<String,Integer> dictionary = new HashMap<String,Integer>();
+        for (int i = 0; i < dictionnarySize; i++)
+            dictionary.put(Character.toString((char)i), i);
+
+        String w = "";
+        List<Integer> result = new ArrayList<Integer>();
+        File file = new File(filein);
+
+        try (BufferedInputStream bufferedInputStream = new BufferedInputStream(new FileInputStream(file))) {
+            int singleCharInt;
+            char singleChar;
+            while((singleCharInt = bufferedInputStream.read()) != -1) {
+                singleChar = (char) singleCharInt;
+                String wc = w + singleChar;
+                if (dictionary.containsKey(wc))
+                    w = wc;
+                else {
+                    result.add(dictionary.get(w));
+                    // Add wc to the dictionary.
+                    dictionary.put(wc, dictSize++);
+                    w = Character.toString(singleChar);
+                }
+            }
+        } catch (final IOException e) {
+            e.printStackTrace();
+        }
+
+        // Output the code for w.
+        if (!w.equals(""))
+            result.add(dictionary.get(w));
+
+
+        File file2 = new File(fileout);
+
+        try (BufferedOutputStream bufferedOutputStream = new BufferedOutputStream(new FileOutputStream(file2))) {
+            for (int i : result)
+                bufferedOutputStream.write(i);
+        } catch (final IOException e) {
+            e.printStackTrace();
+        }
     }
 
     private String fil(int inp, int btsz) {

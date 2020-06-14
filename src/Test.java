@@ -99,7 +99,7 @@ public class Test {
 			//test.byteRead(defaultInPathName);
 			//String stringToCompress = test.stringBuilder.toString();
 			LZWCompressor LZWcompressor = new LZWCompressor();
-			LZWcompressor.compress2(defaultInPathName,defaultOutPathName);
+			LZWcompressor.compress3(defaultInPathName,defaultOutPathName);
 			//List<Integer> compressedArray = LZWcompressor.compress(stringToCompress);
 			//test.fastWrite(compressedArray.toString());
 		}
