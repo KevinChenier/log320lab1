@@ -47,8 +47,6 @@ public class LZWCompressor {
             for (int i : result) {
                 DataOutputStream os = new DataOutputStream(bufferedOutputStream);
                 os.writeInt(i);
-                //bufferedOutputStream.write(ByteBuffer.allocate(4).putInt(i).array());
-                //bufferedOutputStream.write(00);
             }
         } catch (final IOException e) {
             e.printStackTrace();
@@ -64,42 +62,23 @@ public class LZWCompressor {
 
         File file = new File(filein);
         File file2 = new File(fileout);
-        //String w = "" + (char)(int)compressed.remove(0);
         String w = null;
         StringBuffer result = new StringBuffer();
-        try (BufferedInputStream bufferedInputStream = new BufferedInputStream(new FileInputStream(file))) {
-            try {
-                DataInputStream is = new DataInputStream(bufferedInputStream);
-                BufferedOutputStream out = new BufferedOutputStream(new FileOutputStream(file2));
-                DataOutputStream os = new DataOutputStream(out);
-                //FileWriter out = new FileWriter(file2);
+        try (BufferedInputStream bufferedInputStream = new BufferedInputStream(new FileInputStream(file));BufferedOutputStream out = new BufferedOutputStream(new FileOutputStream(file2));
+             DataInputStream is = new DataInputStream(bufferedInputStream); DataOutputStream os = new DataOutputStream(out);) {
 
-                int k = 0;
-                while (is.available() > 0) {
-                    k = is.readInt();
-                    String entry = dictionary.get(k);
-                    if(entry == null){
-                        entry = w + w.charAt(0);
-                    }
-                    //result.append(entry);
-                    os.writeBytes(entry);
-                    if(w != null){
-                        dictionary.put(dictSize++, w + entry.charAt(0));
-                    }
-                    w = entry;
-                    //String entry = dictionary.containsKey(k) ? dictionary.get(k) : w + w.charAt(0);
-                    //result.append(entry);
-
-                    //dictionary.put(dictSize++, w + entry.charAt(0));
-                    //w = entry;
+            int k = 0;
+            while (is.available() > 0) {
+                k = is.readInt();
+                String entry = dictionary.get(k);
+                if(entry == null){
+                    entry = w + w.charAt(0);
                 }
-                os.close();
-                out.close();
-            } catch (NullPointerException e) {
-                System.err.println("Null exception was catched... LZW decompression failed.");
-                //return result.toString();
-            } finally {
-                //return result.toString();
+                os.writeBytes(entry);
+                if(w != null){
+                    dictionary.put(dictSize++, w + entry.charAt(0));
+                }
+                w = entry;
             }
         } catch (final IOException e) {
             e.printStackTrace();

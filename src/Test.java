@@ -1,5 +1,7 @@
 import java.io.*;
 import java.nio.charset.StandardCharsets;
+import java.time.Duration;
+import java.time.Instant;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Scanner;
@@ -107,6 +109,7 @@ public class Test {
 		if(args.length != 4){
 			throw new ExceptionInInitializerError();
 		}
+		Instant start = Instant.now();
 		defaultInPathName = args[2];
 		defaultOutPathName = args[3];
 		Test test = new Test();
@@ -131,5 +134,9 @@ public class Test {
 			LZWCompressor LZWcompressor = new LZWCompressor();
 			LZWcompressor.decompress(defaultInPathName,defaultOutPathName);
 		}
+
+		Instant end = Instant.now();
+		Duration timeElapsed = Duration.between(start, end);
+		System.out.println("Operation done in: " + timeElapsed.toMillis() + " milliseconds!");
 	}
 }
