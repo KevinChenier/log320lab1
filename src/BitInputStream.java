@@ -48,20 +48,6 @@ public class BitInputStream {
         return result;
     }
 
-    // post: reads next byte from input (-1 if at end of file)
-    public Byte readByte() throws IOException {
-        try{
-            return input2.readByte();
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
-        throw new EOFException();
-    }
-
-    public int readInt() throws IOException {
-        return input2.readInt();
-    }
-
     // post: refreshes the internal buffer with the next BYTE_SIZE bits
     private void nextByte() {
         try {

@@ -45,21 +45,6 @@ public class BitOutputStream {
             flush();
     }
 
-    // post: writes given bit to output
-    public void writeByte(Byte b) throws IOException {
-        output2.write(b);
-    }
-
-    // post: writes given string to output
-    public void writeBytes(String s) throws IOException {
-        output2.writeBytes(s);
-    }
-
-    // post: writes given bit to output
-    public void writeInt(int i) throws IOException {
-        output2.writeInt(i);
-    }
-
     // post: Flushes the buffer.  If numDigits < BYTE_SIZE, this will 
     //       effectively pad the output with extra 0's, so this should
     //       be called only when numDigits == BYTE_SIZE or when we are
