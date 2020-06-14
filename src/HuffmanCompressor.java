@@ -1,3 +1,11 @@
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.FileOutputStream;
+import java.io.IOException;
+import java.io.ObjectInputStream;
+import java.io.ObjectOutputStream;
+import java.nio.file.Files;
+import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Comparator;
 import java.util.HashMap;
@@ -7,7 +15,10 @@ import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
 import java.util.PriorityQueue;
+import java.util.Properties;
 import java.util.Set;
+
+import sun.nio.cs.StandardCharsets;
 
 public class HuffmanCompressor {
 
@@ -77,11 +88,22 @@ public class HuffmanCompressor {
 			}
 			freq.put(test.charAt(i), freq.get(test.charAt(i)) + 1);
 		}
+		
 		freqSorted = sortByValue(freq);
+
+		try {
+			FileOutputStream fileOut = new FileOutputStream("compressedfile.dat");
+			ObjectOutputStream out = new ObjectOutputStream(fileOut);
+			out.writeObject(freqSorted);
+			out.close();
+			fileOut.close();
+		} catch (IOException i) {
+			i.printStackTrace();
+		}
 
 		root = buildTree(freqSorted);
 
-		System.out.println("Character Frequency Map = " + freqSorted+ "\n");
+		System.out.println("Character Frequency Map = " + freqSorted + "\n");
 
 		setPrefixCodes(root, new StringBuilder());
 		System.out.println("Character Prefix Map = " + charPrefixHashMap);
@@ -98,8 +120,23 @@ public class HuffmanCompressor {
 	public String decode(String file) {
 
 		StringBuilder stringBuilder = new StringBuilder();
-		BitInputStream bis = new BitInputStream(file);
+		BitInputStream bis = new BitInputStream(file + ".txt");
+
 		StringBuilder sBuilder = new StringBuilder();
+		HashMap<Character, Integer> freqSorted = new HashMap<>();
+		
+		try {
+			FileInputStream fileIn = new FileInputStream(file + ".dat");
+			ObjectInputStream in = new ObjectInputStream(fileIn);
+			freqSorted = (HashMap) in.readObject();
+			in.close();
+			fileIn.close();
+		} catch (IOException i) {
+			i.printStackTrace();
+		} catch (ClassNotFoundException c) {
+			System.out.println("Employee class not found");
+			c.printStackTrace();
+		}
 
 		int bit = 0;
 
@@ -113,6 +150,7 @@ public class HuffmanCompressor {
 
 		String s = sBuilder.toString();
 
+		root = buildTree(freqSorted);
 		HuffmanNode temp = root;
 
 		for (int i = 0; i < s.length(); i++) {
@@ -160,7 +198,7 @@ public class HuffmanCompressor {
 		for (Map.Entry<Character, Integer> temp : list) {
 			sortedMap.put(temp.getKey(), temp.getValue());
 		}
-		
+
 		return sortedMap;
 	}
 }
