@@ -17,6 +17,7 @@ import java.io.*;
 
 public class BitOutputStream {
     private FileOutputStream output;
+    private DataOutputStream output2;
     private int digits;     // a buffer used to build up next set of digits
     private int numDigits;  // how many digits are currently in the buffer
 
@@ -27,6 +28,7 @@ public class BitOutputStream {
     public BitOutputStream(String file) {
         try {
             output = new FileOutputStream(file);
+            output2 = new DataOutputStream(output);
         } catch (IOException e) {
             throw new RuntimeException(e.toString());
         }
@@ -41,6 +43,21 @@ public class BitOutputStream {
         numDigits++;
         if (numDigits == BYTE_SIZE)
             flush();
+    }
+
+    // post: writes given bit to output
+    public void writeByte(Byte b) throws IOException {
+        output2.write(b);
+    }
+
+    // post: writes given string to output
+    public void writeBytes(String s) throws IOException {
+        output2.writeBytes(s);
+    }
+
+    // post: writes given bit to output
+    public void writeInt(int i) throws IOException {
+        output2.writeInt(i);
     }
 
     // post: Flushes the buffer.  If numDigits < BYTE_SIZE, this will 
@@ -63,6 +80,7 @@ public class BitOutputStream {
             flush();
         try {
             output.close();
+            output2.close();
         } catch (IOException e) {
             throw new RuntimeException(e.toString());
         }

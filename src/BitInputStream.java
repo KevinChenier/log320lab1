@@ -17,6 +17,7 @@ import java.io.*;
 
 public class BitInputStream {
     private FileInputStream input;
+    private DataInputStream input2;
     private int digits;     // next set of digits (buffer)
     private int numDigits;  // how many digits from buffer have been used
 
@@ -27,6 +28,7 @@ public class BitInputStream {
     public BitInputStream(String file) {
         try {
             input = new FileInputStream(file);
+            input2 = new DataInputStream(input);
         } catch (IOException e) {
             throw new RuntimeException(e.toString());
         }
@@ -46,6 +48,20 @@ public class BitInputStream {
         return result;
     }
 
+    // post: reads next byte from input (-1 if at end of file)
+    public Byte readByte() throws IOException {
+        try{
+            return input2.readByte();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+        throw new EOFException();
+    }
+
+    public int readInt() throws IOException {
+        return input2.readInt();
+    }
+
     // post: refreshes the internal buffer with the next BYTE_SIZE bits
     private void nextByte() {
         try {
@@ -60,6 +76,7 @@ public class BitInputStream {
     public void close() {
         try {
             input.close();
+            input2.close();
         } catch (IOException e) {
             throw new RuntimeException(e.toString());
         }

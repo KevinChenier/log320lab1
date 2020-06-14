@@ -96,17 +96,19 @@ public class Test {
 			test.fastWrite(stringDecompressed);
 		}
 		else if(args[0].equals("-lzw") && args[1].equals("-c")) {
-			test.byteRead(defaultInPathName);
-			String stringToCompress = test.stringBuilder.toString();
+			//test.byteRead(defaultInPathName);
+			//String stringToCompress = test.stringBuilder.toString();
 			LZWCompressor LZWcompressor = new LZWCompressor();
-			List<Integer> compressedArray = LZWcompressor.compress(stringToCompress);
-			test.fastWrite(compressedArray.toString());
+			LZWcompressor.compress2(defaultInPathName,defaultOutPathName);
+			//List<Integer> compressedArray = LZWcompressor.compress(stringToCompress);
+			//test.fastWrite(compressedArray.toString());
 		}
 		else if(args[0].equals("-lzw") && args[1].equals("-d")) {
 			LZWCompressor LZWcompressor = new LZWCompressor();
-			List<Integer> integerList = test.extractIntegerListFromFile(defaultInPathName);
-			String stringDecompressed = LZWcompressor.decompress(integerList);
-			test.fastWrite(stringDecompressed);
+			LZWcompressor.decompress2(defaultInPathName,defaultOutPathName);
+			//List<Integer> integerList = test.extractIntegerListFromFile(defaultInPathName);
+			//String stringDecompressed = LZWcompressor.decompress(integerList);
+			//test.fastWrite(stringDecompressed);
 		}
 	}
 }
