@@ -52,7 +52,7 @@ public class LZWCompressor {
         File file = new File(filein);
         File file2 = new File(fileout);
         String w = null;
-        StringBuffer result = new StringBuffer();
+
         try (BufferedInputStream bufferedInputStream = new BufferedInputStream(new FileInputStream(file));BufferedOutputStream out = new BufferedOutputStream(new FileOutputStream(file2));
              DataInputStream is = new DataInputStream(bufferedInputStream); DataOutputStream os = new DataOutputStream(out);) {
 
@@ -72,6 +72,5 @@ public class LZWCompressor {
         } catch (final IOException e) {
             e.printStackTrace();
         }
-        System.out.println(result);
     }
 }
