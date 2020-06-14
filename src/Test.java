@@ -27,51 +27,6 @@ public class Test {
 		}
 	}
 
-	public List<Integer> byteReadInt(String inPathName) {
-		File file = new File(inPathName);
-		List<Integer> test = new ArrayList<Integer>();
-		try (BufferedInputStream bufferedInputStream = new BufferedInputStream(new FileInputStream(file))) {
-			DataInputStream is = new DataInputStream(bufferedInputStream);
-			int singleCharInt;
-			char singleChar;
-			int bigtest =0;
-			int max100 = 300;
-
-			while((singleCharInt = is.readInt()) != -1 && max100 > 0) {
-				test.add(singleCharInt);
-				System.out.println(singleCharInt);
-				singleChar = (char) singleCharInt;
-				//System.out.println(String.format("0x%X %c", singleCharInt, singleChar));
-				//bigtest = Integer.valueOf(String.format("0x%X %c", singleCharInt, singleChar))
-				bigtest = (int) ((char) singleCharInt);
-				//stringBuilder.append(singleChar);
-				max100--;
-			}
-			return test;
-		} catch (final IOException e) {
-			e.printStackTrace();
-		}
-		return test;
-	}
-
-
-	public void intRead(String inPathName) {
-		// Quick read with Integer
-		try {
-			final BufferedReader in = new BufferedReader(
-					new InputStreamReader(new FileInputStream(inPathName), StandardCharsets.UTF_8));
-			int singleCharInt;
-			char singleChar;
-			while ((singleCharInt = in.read()) != -1) {
-				singleChar = (char) singleCharInt;
-				stringBuilder.append(singleChar);
-			}
-			in.close();
-		} catch (final IOException e) {
-			e.printStackTrace();
-		}
-	}
-
 	public void fastWrite(String stringToWrite) {
 		if (stringToWrite.isEmpty()) {
 			System.err.println("String is empty");
@@ -115,10 +70,9 @@ public class Test {
 		Test test = new Test();
 
 		if((args[0].equals("-huff") || args[0].equals("-opt")) && args[1].equals("-c")) {
-			test.byteRead(defaultInPathName);
-			String stringToCompress = test.stringBuilder.toString();
 			HuffmanCompressor HUFFcompressor = new HuffmanCompressor();
-			String stringCompressed = HUFFcompressor.encode(stringToCompress);
+			test.byteRead(defaultInPathName);
+			String stringCompressed = HUFFcompressor.encode(test.stringBuilder.toString());
 			test.writeToFile(stringCompressed);
 		}
 		else if((args[0].equals("-huff") || args[0].equals("-opt")) && args[1].equals("-d")) {
