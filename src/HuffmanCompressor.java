@@ -120,13 +120,13 @@ public class HuffmanCompressor {
 	public String decode(String file) {
 
 		StringBuilder stringBuilder = new StringBuilder();
-		BitInputStream bis = new BitInputStream(file + ".txt");
+		BitInputStream bis = new BitInputStream(file);
 
 		StringBuilder sBuilder = new StringBuilder();
 		HashMap<Character, Integer> freqSorted = new HashMap<>();
 		
 		try {
-			FileInputStream fileIn = new FileInputStream(file + ".dat");
+			FileInputStream fileIn = new FileInputStream("compressedfile.dat");
 			ObjectInputStream in = new ObjectInputStream(fileIn);
 			freqSorted = (HashMap) in.readObject();
 			in.close();

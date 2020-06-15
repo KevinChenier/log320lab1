@@ -27,7 +27,13 @@ public class Test {
 		}
 	}
 
-	public void fastWrite(String stringToWrite) {
+	public void fastWrite(String stringToWrite, String out) throws IOException {
+		File file = new File(out);
+		try (BufferedOutputStream bufferedOutputStream = new BufferedOutputStream(new FileOutputStream(file));
+			 DataOutputStream os = new DataOutputStream(bufferedOutputStream);) {
+			os.writeBytes(stringToWrite);
+		}
+		/*
 		if (stringToWrite.isEmpty()) {
 			System.err.println("String is empty");
 			return;
@@ -41,6 +47,8 @@ public class Test {
 		} catch (IOException e) {
 			throw new RuntimeException(e);
 		}
+
+		 */
 	}
 
 	public void writeToFile(String binaryString) throws IOException {
@@ -78,7 +86,7 @@ public class Test {
 		else if((args[0].equals("-huff") || args[0].equals("-opt")) && args[1].equals("-d")) {
 			HuffmanCompressor HUFFcompressor = new HuffmanCompressor();
 			String stringDecompressed = HUFFcompressor.decode(defaultInPathName);
-			test.fastWrite(stringDecompressed);
+			test.fastWrite(stringDecompressed,defaultOutPathName);
 		}
 		else if(args[0].equals("-lzw") && args[1].equals("-c")) {
 			LZWCompressor LZWcompressor = new LZWCompressor();
