@@ -60,7 +60,7 @@ public class HuffmanCompressor {
 		}
 	}
 
-	public String compress(String fileString) {
+	public String compress(String fileString,String fileStringOut) {
 		HashMap<Character, Integer> freqCodes = new HashMap<>();
 		for (int i = 0; i < fileString.length(); i++) {
 			if (!freqCodes.containsKey(fileString.charAt(i))) {
@@ -71,7 +71,7 @@ public class HuffmanCompressor {
 		}
 
 		try {
-			FileOutputStream fileOut = new FileOutputStream("compressedfile.dat");
+			FileOutputStream fileOut = new FileOutputStream(fileStringOut + ".dat");
 			ObjectOutputStream out = new ObjectOutputStream(fileOut);
 			out.writeObject(freqCodes);
 			out.close();
@@ -96,7 +96,7 @@ public class HuffmanCompressor {
 		return s.toString();
 	}
 
-	public String decompress(String compressedFileString) {
+	public String decompress(String compressedFileString, String out) {
 
 		StringBuilder compressedFile = new StringBuilder();
 		BitInputStream bis = new BitInputStream(compressedFileString);
@@ -105,7 +105,7 @@ public class HuffmanCompressor {
 		HashMap<Character, Integer> freqCodes = new HashMap<>();
 
 		try {
-			FileInputStream fileIn = new FileInputStream("compressedfile.dat");
+			FileInputStream fileIn = new FileInputStream(compressedFileString + ".dat");
 			ObjectInputStream in = new ObjectInputStream(fileIn);
 			freqCodes = (HashMap) in.readObject();
 			in.close();

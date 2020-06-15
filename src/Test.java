@@ -54,12 +54,12 @@ public class Test {
 		if((args[0].equals("-huff") || args[0].equals("-opt")) && args[1].equals("-c")) {
 			HuffmanCompressor HUFFcompressor = new HuffmanCompressor();
 			test.byteRead(defaultInPathName);
-			String stringCompressed = HUFFcompressor.compress(test.stringBuilder.toString());
+			String stringCompressed = HUFFcompressor.compress(test.stringBuilder.toString(),defaultOutPathName);
 			test.writeToFile(stringCompressed);
 		}
 		else if((args[0].equals("-huff") || args[0].equals("-opt")) && args[1].equals("-d")) {
 			HuffmanCompressor HUFFcompressor = new HuffmanCompressor();
-			String stringDecompressed = HUFFcompressor.decompress(defaultInPathName);
+			String stringDecompressed = HUFFcompressor.decompress(defaultInPathName,defaultOutPathName);
 			test.fastWrite(stringDecompressed,defaultOutPathName);
 		}
 		else if(args[0].equals("-lzw") && args[1].equals("-c")) {
