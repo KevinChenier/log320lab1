@@ -33,22 +33,6 @@ public class Test {
 			 DataOutputStream os = new DataOutputStream(bufferedOutputStream);) {
 			os.writeBytes(stringToWrite);
 		}
-		/*
-		if (stringToWrite.isEmpty()) {
-			System.err.println("String is empty");
-			return;
-		}
-		// Fast Write
-		FileWriter myWriter = null;
-		try {
-			myWriter = new FileWriter(defaultOutPathName);
-			myWriter.write(stringToWrite);
-			myWriter.close();
-		} catch (IOException e) {
-			throw new RuntimeException(e);
-		}
-
-		 */
 	}
 
 	public void writeToFile(String binaryString) throws IOException {
@@ -56,16 +40,6 @@ public class Test {
 		for (int j = 0; j < binaryString.length(); j++) {
 			bos.writeBit(Character.getNumericValue(binaryString.charAt(j)));
 		}
-	}
-
-	public List<Integer> extractIntegerListFromFile(String pathName) throws FileNotFoundException {
-		Scanner scanner = new Scanner(new File(pathName));
-		//scanner.useDelimiter("\\D+");
-		List<Integer> list = new ArrayList<Integer>();
-		while (scanner.hasNext()) {
-			list.add(Integer.parseInt(scanner.next()));
-		}
-		return list;
 	}
 
 	public static void main(String[] args) throws IOException {
