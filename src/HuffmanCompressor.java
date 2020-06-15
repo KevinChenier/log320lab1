@@ -4,131 +4,110 @@ import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
-import java.nio.file.Files;
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.Comparator;
 import java.util.HashMap;
-import java.util.LinkedHashMap;
-import java.util.LinkedList;
-import java.util.List;
 import java.util.Map;
-import java.util.Map.Entry;
 import java.util.PriorityQueue;
-import java.util.Properties;
 import java.util.Set;
-
-import sun.nio.cs.StandardCharsets;
 
 public class HuffmanCompressor {
 
-	private static Map<Character, String> charPrefixHashMap = new HashMap<>();
+	private static Map<Character, String> huffmanPrefix = new HashMap<>();
 	static HuffmanNode root;
 
-	private static HuffmanNode buildTree(Map<Character, Integer> freq) {
+	private static HuffmanNode buildTree(Map<Character, Integer> freqCodes) {
 
-		PriorityQueue<HuffmanNode> priorityQueue = new PriorityQueue<>();
-		Set<Character> keySet = freq.keySet();
+		PriorityQueue<HuffmanNode> prioQueue = new PriorityQueue<>();
+		Set<Character> keySet = freqCodes.keySet();
 		for (Character c : keySet) {
 			HuffmanNode huffmanNode = new HuffmanNode();
 			huffmanNode.data = c;
-			huffmanNode.frequency = freq.get(c);
+			huffmanNode.frequency = freqCodes.get(c);
 			huffmanNode.left = null;
 			huffmanNode.right = null;
-			priorityQueue.offer(huffmanNode);
+			prioQueue.offer(huffmanNode);
 		}
 
-		while (priorityQueue.size() > 1) {
-
-			HuffmanNode x = priorityQueue.peek();
-			priorityQueue.poll();
-
-			HuffmanNode y = priorityQueue.peek();
-			priorityQueue.poll();
-
+		while (prioQueue.size() > 1) {
+			HuffmanNode x = prioQueue.peek();
+			prioQueue.poll();
+			HuffmanNode y = prioQueue.peek();
+			prioQueue.poll();
 			HuffmanNode sum = new HuffmanNode();
-
 			sum.frequency = x.frequency + y.frequency;
 			sum.data = '-';
-
 			sum.left = x;
-
 			sum.right = y;
 			root = sum;
-
-			priorityQueue.offer(sum);
+			prioQueue.offer(sum);
 		}
 
-		return priorityQueue.poll();
+		return prioQueue.poll();
 	}
 
-	private static void setPrefixCodes(HuffmanNode node, StringBuilder prefix) {
-		if (node != null) {
-			if (node.left == null && node.right == null) {
-				charPrefixHashMap.put(node.data, prefix.toString());
+	private static void setPrefixCodes(HuffmanNode nodePrefix, StringBuilder prefixCode) {
+		if (nodePrefix != null) {
+			if (nodePrefix.left == null && nodePrefix.right == null) {
+				huffmanPrefix.put(nodePrefix.data, prefixCode.toString());
 			} else {
-				prefix.append('0');
-				setPrefixCodes(node.left, prefix);
-				prefix.deleteCharAt(prefix.length() - 1);
+				prefixCode.append('0');
+				setPrefixCodes(nodePrefix.left, prefixCode);
+				prefixCode.deleteCharAt(prefixCode.length() - 1);
 
-				prefix.append('1');
-				setPrefixCodes(node.right, prefix);
-				prefix.deleteCharAt(prefix.length() - 1);
+				prefixCode.append('1');
+				setPrefixCodes(nodePrefix.right, prefixCode);
+				prefixCode.deleteCharAt(prefixCode.length() - 1);
 			}
 		}
 	}
 
-	public String encode(String test) {
-		HashMap<Character, Integer> freq = new HashMap<>();
-		HashMap<Character, Integer> freqSorted = new HashMap<>();
-
-		for (int i = 0; i < test.length(); i++) {
-			if (!freq.containsKey(test.charAt(i))) {
-				freq.put(test.charAt(i), 0);
+	public String compress(String fileString) {
+		HashMap<Character, Integer> freqCodes = new HashMap<>();
+		for (int i = 0; i < fileString.length(); i++) {
+			if (!freqCodes.containsKey(fileString.charAt(i))) {
+				freqCodes.put(fileString.charAt(i), 1);
+			} else {
+				freqCodes.put(fileString.charAt(i), freqCodes.get(fileString.charAt(i)) + 1);
 			}
-			freq.put(test.charAt(i), freq.get(test.charAt(i)) + 1);
 		}
-		
-		freqSorted = sortByValue(freq);
 
 		try {
 			FileOutputStream fileOut = new FileOutputStream("compressedfile.dat");
 			ObjectOutputStream out = new ObjectOutputStream(fileOut);
-			out.writeObject(freqSorted);
+			out.writeObject(freqCodes);
 			out.close();
 			fileOut.close();
 		} catch (IOException i) {
 			i.printStackTrace();
 		}
 
-		root = buildTree(freqSorted);
+		root = buildTree(freqCodes);
 
-		System.out.println("Character Frequency Map = " + freqSorted + "\n");
+		System.out.println("Character Frequency Map = " + freqCodes + "\n");
 
 		setPrefixCodes(root, new StringBuilder());
-		System.out.println("Character Prefix Map = " + charPrefixHashMap);
+		System.out.println("Character Prefix Map = " + huffmanPrefix);
 		StringBuilder s = new StringBuilder();
 
-		for (int i = 0; i < test.length(); i++) {
-			char c = test.charAt(i);
-			s.append(charPrefixHashMap.get(c));
+		for (int i = 0; i < fileString.length(); i++) {
+			char c = fileString.charAt(i);
+			s.append(huffmanPrefix.get(c));
 		}
 
 		return s.toString();
 	}
 
-	public String decode(String file) {
+	public String decompress(String compressedFileString) {
 
-		StringBuilder stringBuilder = new StringBuilder();
-		BitInputStream bis = new BitInputStream(file);
+		StringBuilder compressedFile = new StringBuilder();
+		BitInputStream bis = new BitInputStream(compressedFileString);
 
 		StringBuilder sBuilder = new StringBuilder();
-		HashMap<Character, Integer> freqSorted = new HashMap<>();
-		
+		HashMap<Character, Integer> freqCodes = new HashMap<>();
+
 		try {
 			FileInputStream fileIn = new FileInputStream("compressedfile.dat");
 			ObjectInputStream in = new ObjectInputStream(fileIn);
-			freqSorted = (HashMap) in.readObject();
+			freqCodes = (HashMap) in.readObject();
 			in.close();
 			fileIn.close();
 		} catch (IOException i) {
@@ -150,29 +129,28 @@ public class HuffmanCompressor {
 
 		String s = sBuilder.toString();
 
-		root = buildTree(freqSorted);
-		HuffmanNode temp = root;
+		HuffmanNode decodeRoot = buildTree(freqCodes);
 
 		for (int i = 0; i < s.length(); i++) {
 			int j = Integer.parseInt(String.valueOf(s.charAt(i)));
 			if (j == 0) {
-				temp = temp.left;
-				if (temp.left == null && temp.right == null) {
-					stringBuilder.append(temp.data);
-					temp = root;
+				decodeRoot = decodeRoot.left;
+				if (decodeRoot.left == null && decodeRoot.right == null) {
+					compressedFile.append(decodeRoot.data);
+					decodeRoot = root;
 				}
 			}
 			if (j == 1) {
-				temp = temp.right;
-				if (temp.left == null && temp.right == null) {
-					stringBuilder.append(temp.data);
-					temp = root;
+				decodeRoot = decodeRoot.right;
+				if (decodeRoot.left == null && decodeRoot.right == null) {
+					compressedFile.append(decodeRoot.data);
+					decodeRoot = root;
 				}
 			}
 		}
 
 		// System.out.println("Decoded string is " + stringBuilder.toString());
-		return stringBuilder.toString();
+		return compressedFile.toString();
 	}
 
 	static class HuffmanNode implements Comparable<HuffmanNode> {
@@ -183,22 +161,5 @@ public class HuffmanCompressor {
 		public int compareTo(HuffmanNode node) {
 			return frequency - node.frequency;
 		}
-	}
-
-	public static HashMap<Character, Integer> sortByValue(HashMap<Character, Integer> hm) {
-		List<Entry<Character, Integer>> list = new LinkedList<Map.Entry<Character, Integer>>(hm.entrySet());
-
-		Collections.sort(list, new Comparator<Map.Entry<Character, Integer>>() {
-			public int compare(Map.Entry<Character, Integer> map1, Map.Entry<Character, Integer> map2) {
-				return (map1.getValue()).compareTo(map2.getValue());
-			}
-		});
-
-		HashMap<Character, Integer> sortedMap = new LinkedHashMap<Character, Integer>();
-		for (Map.Entry<Character, Integer> temp : list) {
-			sortedMap.put(temp.getKey(), temp.getValue());
-		}
-
-		return sortedMap;
 	}
 }
